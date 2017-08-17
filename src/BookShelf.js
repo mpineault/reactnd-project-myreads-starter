@@ -3,10 +3,7 @@ import Book from './Book'
 
 class BookShelf extends Component {
   render() {
-    const bookShelfTitle = this.props.bookShelfTitle
-    const books = this.props.books
-    const onUpdateBookShelf = this.props.onUpdateBookShelf
-    const updating = this.props.updating
+    const { updating, books, onUpdateBook, bookShelfTitle } = this.props
 
     return (
       <div className="bookshelf">
@@ -17,7 +14,7 @@ class BookShelf extends Component {
               <li key={book.id}>
                 <Book
                   book={book}
-                  onUpdateBookShelf={onUpdateBookShelf}
+                  onUpdateBook={onUpdateBook}
                   updating={updating}
                 />
               </li>

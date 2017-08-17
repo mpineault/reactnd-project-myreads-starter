@@ -19,8 +19,7 @@ class ListBooks extends Component {
         books: (this.props.books.filter((book) => book.shelf === "read")).sort(sortBy('title'))
       }
     ]
-    const onUpdateBookShelf = this.props.onUpdateBookShelf
-    const updating = this.props.updating
+    const { updating, onUpdateBook } = this.props
 
     return (
       <div className="list-books">
@@ -34,7 +33,7 @@ class ListBooks extends Component {
                 key={collection.type}
                 bookShelfTitle={collection.type}
                 books={collection.books}
-                onUpdateBookShelf={onUpdateBookShelf}
+                onUpdateBook={onUpdateBook}
                 updating={updating}
                  />
            ))}

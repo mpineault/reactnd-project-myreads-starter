@@ -9,47 +9,57 @@ class BooksApp extends React.Component {
   state = {
     books: [],
     updating: false,
+    searching: false,
     results: []
   }
 
   componentDidMount () {
+    this.getAllBooks()
+  }
+
+  getAllBooks () {
     BooksAPI.getAll()
       .then((books) => {
-        this.setState({ books })
+        this.setState({ books, updating: false })
       })
   }
 
-  updateBookShelf (updateBook, shelf) {
-    this.setState((state) => ({
-      updating: true
-    }))
+  updateSearching () {
+    this.setState({ searching: true })
+  }
+
+  updateBook (updateBook, shelf) {
+    this.setState({ updating: true })
 
     updateBook.shelf = shelf
 
     BooksAPI.update (updateBook, shelf)
-      .then((book) => {
-        this.setState((state) => ({
-          books: state.books.map((book) => {
-            book = (book.id === updateBook.id) ? updateBook : book
-            return book
-          }),
-          updating: false
-        }))
+      .then(() => {
+        this.getAllBooks()
       })
   }
 
   searchBooks (query) {
     if(query.length > 0) {
-      BooksAPI.search(query, 10)
+      BooksAPI.search(query, 20)
         .then((books) => {
-          this.setState((state) => ({
-            results: books
-          }))
+          if(books.length > 0) {
+            books = books.map((book) => {
+              var findBook = this.state.books.filter((stateBook) => (stateBook.id === book.id))
+              return (findBook.length > 0) ? findBook[0] : book
+            })
+          }
+
+          this.setState({
+            results: books,
+            searching: false
+          })
         })
     } else {
-      this.setState((state) => ({
-        results: []
-      }))
+      this.setState({
+        results: [],
+        searching: false
+      })
     }
   }
 
@@ -60,20 +70,24 @@ class BooksApp extends React.Component {
           <ListBooks
             books={this.state.books}
             updating={this.state.updating}
-            onUpdateBookShelf={(book, shelf) => {
-              this.updateBookShelf(book, shelf)
+            onUpdateBook={(book, shelf) => {
+              this.updateBook(book, shelf)
             }}
           />
         )}/>
       <Route path="/search" render={() => (
         <SearchBooks
           books={this.state.results}
+          updating={this.state.updating}
+          searching={this.state.searching}
+          onSearching={() => {
+            this.updateSearching()
+          }}
           onSearchBooks={(query) => {
             this.searchBooks(query)
           }}
-          updating={this.state.updating}
-          onUpdateBookShelf={(book, shelf) => {
-            this.updateBookShelf(book, shelf)
+          onUpdateBook={(book, shelf) => {
+            this.updateBook(book, shelf)
           }}
           />
       )}/>

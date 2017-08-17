@@ -2,17 +2,18 @@ import React, { Component } from 'react'
 
 class Book extends Component {
   render() {
-    const book = this.props.book
-    const onUpdateBookShelf = this.props.onUpdateBookShelf
-    const updating = this.props.updating
+    const { book, updating, onUpdateBook } = this.props
 
     return (
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: 'url("' + book.imageLinks.smallThumbnail + '")' }}></div>
+          {(book.imageLinks && book.imageLinks.smallThumbnail)
+            ? (<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: 'url("' + book.imageLinks.smallThumbnail + '")' }}></div>)
+            : (<div className="book-cover" style={{ width: 128, height: 193 }}><div className="book-cover-title">{book.title}</div></div>)
+          }
           <div className={"book-shelf-changer " + (updating ? 'hidden' : '')}>
             <select
-              onChange={(e) => onUpdateBookShelf(book, e.target.value)}
+              onChange={(e) => onUpdateBook(book, e.target.value)}
               value={(book.shelf) ? book.shelf : ""}
               disabled={updating}
               style={{ cursor: ((updating) ? 'default' : 'pointer') }}
