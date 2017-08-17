@@ -8,24 +8,25 @@ import './App.css'
 class BooksApp extends React.Component {
   state = {
     books: [],
-    updating: false
+    updating: false,
+    results: []
   }
 
-  componentDidMount() {
+  componentDidMount () {
     BooksAPI.getAll()
       .then((books) => {
         this.setState({ books })
       })
   }
 
-  updateBookShelf(updateBook, shelf) {
+  updateBookShelf (updateBook, shelf) {
     this.setState((state) => ({
       updating: true
     }))
 
     updateBook.shelf = shelf
 
-    BooksAPI.update(updateBook, shelf)
+    BooksAPI.update (updateBook, shelf)
       .then((book) => {
         this.setState((state) => ({
           books: state.books.map((book) => {
@@ -35,6 +36,21 @@ class BooksApp extends React.Component {
           updating: false
         }))
       })
+  }
+
+  searchBooks (query) {
+    if(query.length > 0) {
+      BooksAPI.search(query, 10)
+        .then((books) => {
+          this.setState((state) => ({
+            results: books
+          }))
+        })
+    } else {
+      this.setState((state) => ({
+        results: []
+      }))
+    }
   }
 
   render() {
@@ -50,7 +66,16 @@ class BooksApp extends React.Component {
           />
         )}/>
       <Route path="/search" render={() => (
-        <SearchBooks/>
+        <SearchBooks
+          books={this.state.results}
+          onSearchBooks={(query) => {
+            this.searchBooks(query)
+          }}
+          updating={this.state.updating}
+          onUpdateBookShelf={(book, shelf) => {
+            this.updateBookShelf(book, shelf)
+          }}
+          />
       )}/>
       </div>
     )

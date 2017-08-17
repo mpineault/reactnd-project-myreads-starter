@@ -13,11 +13,11 @@ class Book extends Component {
           <div className={"book-shelf-changer " + (updating ? 'hidden' : '')}>
             <select
               onChange={(e) => onUpdateBookShelf(book, e.target.value)}
-              value={book.shelf}
+              value={(book.shelf) ? book.shelf : ""}
               disabled={updating}
               style={{ cursor: ((updating) ? 'default' : 'pointer') }}
               >
-              <option value="none" disabled>Move to...</option>
+              <option value="" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
               <option value="read">Read</option>
@@ -27,11 +27,14 @@ class Book extends Component {
         </div>
         <div className="book-title">{book.title}</div>
         <div className="book-authors">
-          {book.authors.map((author, key) =>
-            (<span key={author}>
-              {((book.authors.length > 1 && (key + 1) < book.authors.length) ? author + ', ': author)}
-            </span>)
-          )}
+          {
+            (book.authors && book.authors.length > 0)
+            && book.authors.map((author, key) =>
+              (<span key={author}>
+                {((book.authors.length > 1 && (key + 1) < book.authors.length) ? author + ', ': author)}
+              </span>)
+            )
+          }
         </div>
       </div>
     )
