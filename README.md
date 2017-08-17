@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- NodeJS 6.10.0 or laster
+- NodeJS 6.10.0 or later
 
 ## Instructions
 
